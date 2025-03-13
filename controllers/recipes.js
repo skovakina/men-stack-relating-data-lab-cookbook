@@ -4,23 +4,17 @@ const bcrypt = require("bcrypt");
 const Recipe = require("../models/recipe.js");
 
 // Index	/recipes	GET
-router.get("/recipes", async (req, res) => {
-  try {
-    const recipes = await Recipe.find({});
-    res.render("recipes/index.ejs", { recipes });
-  } catch (error) {
-    console.log(error);
-    res.redirect("/");
-  }
+router.get("/", async (req, res) => {
+  res.render("recipes/index.ejs");
 });
 
 // New	/recipes/new	GET
-router.get("/recipes/new", (req, res) => {
+router.get("/new", (req, res) => {
   res.render("recipes/new.ejs");
 });
 
 // Create	/recipes	POST
-router.post("/recipes", async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     await Recipe.create(req.body);
     res.redirect("/recipes");
@@ -31,7 +25,7 @@ router.post("/recipes", async (req, res) => {
 });
 
 // Show	/recipes/:recipeId	GET
-router.get("/recipes/:recipeId", async (req, res) => {
+router.get("/:recipeId", async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.recipeId);
     res.render("recipes/show.ejs", { recipe });
@@ -42,7 +36,7 @@ router.get("/recipes/:recipeId", async (req, res) => {
 });
 
 // Edit	/recipes/:recipeId/edit	GET
-router.get("/recipes/:recipeId/edit", async (req, res) => {
+router.get("/:recipeId/edit", async (req, res) => {
   try {
     const recipe = await Recipe.findById(req.params.recipeId);
     res.render("recipes/edit.ejs", { recipe });
@@ -53,7 +47,7 @@ router.get("/recipes/:recipeId/edit", async (req, res) => {
 });
 
 // Update	/recipes/:recipeId	PUT
-router.put("/recipes/:recipeId", async (req, res) => {
+router.put("/:recipeId", async (req, res) => {
   try {
     await Recipe.findByIdAndUpdate(req.params.recipeId, req.body);
     res.redirect("/recipes");
@@ -64,7 +58,7 @@ router.put("/recipes/:recipeId", async (req, res) => {
 });
 
 // Delete	/recipes/:recipeId	DELETE
-router.delete("/recipes/:recipeId", async (req, res) => {
+router.delete("/:recipeId", async (req, res) => {
   try {
     await Recipe.findByIdAndDelete(req.params.recipeId);
     res.redirect("/recipes");
