@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 const morgan = require("morgan");
 const session = require("express-session");
 
+const User = require("./models/user.js");
 const authController = require("./controllers/auth.js");
 const recipesController = require("./controllers/recipes.js");
 const ingredientsController = require("./controllers/ingredients.js");
@@ -23,7 +24,7 @@ mongoose.connection.on("connected", () => {
 
 app.use(express.urlencoded({ extended: false }));
 app.use(methodOverride("_method"));
-// app.use(morgan('dev'));
+app.use(morgan("dev"));
 app.use(
   session({
     secret: process.env.SESSION_SECRET,
@@ -32,25 +33,31 @@ app.use(
   })
 );
 
-// app.get("/", (req, res) => {
-//   res.render("index.ejs", {
-//     user: req.session.user,
-//   });
-// });
+app.use(async (req, res, next) => {
+  if (!req.session.user) {
+    let user = await User.findOne({ username: "sv" });
+
+    if (!user) {
+      user = new User({ username: "sv", password: "12" });
+      await user.save();
+    }
+
+    req.session.user = user;
+  }
+  next();
+});
+
+app.get("/", (req, res) => {
+  res.render("index.ejs", {
+    user: req.session.user,
+  });
+});
 
 app.use("/auth", authController);
 app.use(isSignedIn);
 app.use("/recipes", recipesController);
 app.use("/ingredients", ingredientsController);
 app.use(passUserToView);
-
-app.get("/vip-lounge", (req, res) => {
-  if (req.session.user) {
-    res.send(`Welcome to the party ${req.session.user.username}.`);
-  } else {
-    res.send("Sorry, no guests allowed.");
-  }
-});
 
 app.listen(port, () => {
   console.log(`The express app is ready on port ${port}!`);
