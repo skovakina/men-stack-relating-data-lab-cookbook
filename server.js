@@ -32,17 +32,17 @@ app.use(
   })
 );
 
-app.use("/auth", authController);
-app.use(isSignedIn);
-app.use("/recipes", recipesController);
-app.use("/ingredients", ingredientsController);
-app.use(passUserToView);
-
 app.get("/", (req, res) => {
   res.render("index.ejs", {
     user: req.session.user,
   });
 });
+
+app.use("/auth", authController);
+app.use(isSignedIn);
+app.use("/recipes", recipesController);
+app.use("/ingredients", ingredientsController);
+app.use(passUserToView);
 
 app.get("/vip-lounge", (req, res) => {
   if (req.session.user) {
