@@ -33,20 +33,6 @@ app.use(
   })
 );
 
-app.use(async (req, res, next) => {
-  if (!req.session.user) {
-    let user = await User.findOne({ username: "sv" });
-
-    if (!user) {
-      user = new User({ username: "sv", password: "12" });
-      await user.save();
-    }
-
-    req.session.user = user;
-  }
-  next();
-});
-
 app.use(passUserToView);
 
 app.get("/", (req, res) => {
