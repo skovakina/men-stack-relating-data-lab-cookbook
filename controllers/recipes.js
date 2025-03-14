@@ -88,7 +88,7 @@ router.put("/:recipeId", async (req, res) => {
 
     await recipe.save();
 
-    res.render("recipes/${recipe._id}", { recipe });
+    res.render(`recipes/${recipe._id}`, { recipe });
   } catch (error) {
     console.error(error);
     res.redirect("/recipes");
