@@ -25,6 +25,16 @@
 <%= recipe.instructions %></textarea
       >
 
+      <h3>Select Ingredients:</h3>
+      <% if (ingredients.length > 0) { %> <% ingredients.forEach((ingredient) =>
+      { %> <input type="checkbox" name="ingredients" value="<%= ingredient._id
+      %>" <% if (recipe.ingredients.some(i => i.toString() ===
+      ingredient._id.toString())) { %> checked <% } %> /> <%= ingredient.name %>
+      <br />
+      <% }) %> <% } else { %>
+      <p>No ingredients available. Add some <a href="/ingredients">here</a>.</p>
+      <% } %>
+
       <button type="submit">Save Changes</button>
     </form>
 

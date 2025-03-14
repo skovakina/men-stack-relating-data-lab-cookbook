@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const bcrypt = require("bcrypt");
 const Recipe = require("../models/recipe.js");
 const User = require("../models/user.js");
+const Ingredient = require("../models/Ingredient.js");
 
 // Index	/recipes	GET
 router.get("/", async (req, res) => {
@@ -17,8 +17,9 @@ router.get("/", async (req, res) => {
 });
 
 // New	/recipes/new	GET
-router.get("/new", (req, res) => {
-  res.render("recipes/new.ejs");
+router.get("/new", async (req, res) => {
+  const ingredients = await Ingredient.find({});
+  res.render("recipes/new.ejs", { ingredients });
 });
 
 // Create	/recipes	POST
@@ -61,11 +62,12 @@ router.get("/:recipeId", async (req, res) => {
 // Edit	/recipes/:recipeId/edit	GET
 router.get("/:recipeId/edit", async (req, res) => {
   try {
+    const ingredients = await Ingredient.find({});
     const recipe = await Recipe.findById(req.params.recipeId);
     if (!recipe || !recipe.owner.equals(req.session.user._id)) {
       return res.redirect("/recipes");
     }
-    res.render("recipes/edit.ejs", { recipe });
+    res.render("recipes/edit.ejs", { recipe, ingredients });
   } catch (error) {
     console.log(error);
     res.redirect("/recipes");
