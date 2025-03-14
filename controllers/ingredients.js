@@ -19,12 +19,17 @@ router.get("/new", (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
+    const ingredient = req.body.name.trim();
+    if (!ingredient) {
+      return res.redirect("/ingredients/new");
+    }
+
     const existingIngredient = await Ingredient.findOne({
-      name: req.body.name,
+      name: ingredient,
     });
 
     if (!existingIngredient) {
-      const newIngredient = new Ingredient({ name: req.body.name });
+      const newIngredient = new Ingredient({ name: ingredient });
       await newIngredient.save();
     }
 
